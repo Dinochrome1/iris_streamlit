@@ -2,6 +2,9 @@ import requests
 import streamlit as st
 from PIL import Image
 
+# URL = 'http://0.0.0.0:8000/predict_flower'
+URL = 'https://7ecd-89-179-65-195.eu.ngrok.io/predict_flower'
+
 iris = Image.open('app/media/iris.png')
 setosa = Image.open('app/media/setosa.png')
 versicolor = Image.open('app/media/versicolor.png')
@@ -9,8 +12,7 @@ virginica = Image.open('app/media/virginica.png')
 
 
 def post_get_predict(a):
-    url = 'http://0.0.0.0:8000/predict_flower'
-    response = requests.post(url, json={"sepal_length": a[0],
+    response = requests.post(URL, json={"sepal_length": a[0],
                                         "sepal_width": a[1],
                                         "petal_length": a[2],
                                         "petal_width": a[3]})
