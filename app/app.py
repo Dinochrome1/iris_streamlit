@@ -2,10 +2,10 @@ import requests
 import streamlit as st
 from PIL import Image
 
-iris = Image.open('media/iris.png')
-setosa = Image.open('media/setosa.png')
-versicolor = Image.open('media/versicolor.png')
-virginica = Image.open('media/virginica.png')
+iris = Image.open('app/media/iris.png')
+setosa = Image.open('app/media/setosa.png')
+versicolor = Image.open('app/media/versicolor.png')
+virginica = Image.open('app/media/virginica.png')
 
 
 def post_get_predict(a):
