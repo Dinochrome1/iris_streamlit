@@ -43,7 +43,7 @@ with st.form(key='Form1'):
                               step=0.1)
             params.append(value)
 
-        submitted1 = st.form_submit_button(label='Predict flower 1 🔎')
+        submitted1 = st.form_submit_button(label='Predict flower 2 🔎')
 
 
 if submitted1:
