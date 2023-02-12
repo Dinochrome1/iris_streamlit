@@ -30,25 +30,28 @@ parameter_list = ['Sepal length (cm)',
 
 parameter_default_values = ['5.2', '3.2', '4.2', '1.2']
 params = []
-for parameter, parameter_df in zip(parameter_list, parameter_default_values):
-    value = st.sidebar.slider(label=parameter,
+st.write('\n\n')
+
+with st.form(key='Form1'):
+    with st.sidebar:
+        for parameter, parameter_df in zip(parameter_list, parameter_default_values):
+            value = st.slider(label=parameter,
                               key=parameter,
                               value=float(parameter_df),
                               min_value=0.0,
                               max_value=8.0,
                               step=0.1)
-    params.append(value)
+            params.append(value)
 
-st.write('\n\n')
+        submitted1 = st.form_submit_button(label='Search Twitter 🔎')
 
-if st.button("Click Here to Classify"):
+
+if submitted1:
     result: dict = post_get_predict(params)
     st.write(result["flower_class"])
-
     if result["flower_class"] == "Iris Setosa":
         st.image(setosa)
     if result["flower_class"] == "Iris Versicolour":
         st.image(versicolor)
     if result["flower_class"] == "Iris Virginica":
         st.image(virginica)
-
