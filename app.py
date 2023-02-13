@@ -1,13 +1,16 @@
-import os
-
 import requests
 import streamlit as st
 from PIL import Image
 
-iris = Image.open('media/iris.png')
-setosa = Image.open('media/setosa.png')
-versicolor = Image.open('media/versicolor.png')
-virginica = Image.open('media/virginica.png')
+
+@st.cache_data
+def init_app():
+    # print("Initializing app")
+    iris = Image.open('media/iris.png')
+    setosa = Image.open('media/setosa.png')
+    versicolor = Image.open('media/versicolor.png')
+    virginica = Image.open('media/virginica.png')
+    return iris, setosa, versicolor, virginica
 
 
 def post_get_predict(a):
@@ -27,40 +30,48 @@ def test_if_backend_is_working():
     return response.status_code == 200
 
 
-st.title("Iris flower species Classification App")
-st.image(iris)
+def show_sidebar():
+    st.sidebar.title("Features")
+    parameter_list = ['Sepal length (cm)',
+                      'Sepal Width (cm)',
+                      'Petal length (cm)',
+                      'Petal Width (cm)']
+    parameter_default_values = ['5.2', '3.2', '4.2', '1.2']
+    params = []
+    st.write('\n\n')
+    with st.form(key='Form1'):
+        with st.sidebar:
+            for parameter, parameter_df in zip(parameter_list, parameter_default_values):
+                value = st.slider(label=parameter,
+                                  key=parameter,
+                                  value=float(parameter_df),
+                                  min_value=0.0,
+                                  max_value=8.0,
+                                  step=0.1)
+                params.append(value)
 
-st.sidebar.title("Features")
-parameter_list = ['Sepal length (cm)',
-                  'Sepal Width (cm)',
-                  'Petal length (cm)',
-                  'Petal Width (cm)']
+            submitted1 = st.form_submit_button(label='Predict flower 2 🔎')
+    return params, submitted1
 
-parameter_default_values = ['5.2', '3.2', '4.2', '1.2']
-params = []
-st.write('\n\n')
 
-with st.form(key='Form1'):
-    with st.sidebar:
-        for parameter, parameter_df in zip(parameter_list, parameter_default_values):
-            value = st.slider(label=parameter,
-                              key=parameter,
-                              value=float(parameter_df),
-                              min_value=0.0,
-                              max_value=8.0,
-                              step=0.1)
-            params.append(value)
+def main():
+    iris, setosa, versicolor, virginica = init_app()
 
-        submitted1 = st.form_submit_button(label='Predict flower 2 🔎')
+    st.title("Iris flower species Classification App")
+    st.image(iris)
 
-if submitted1:
-    result: dict = post_get_predict(params)
-    st.write(result["flower_class"])
-    if result["flower_class"] == "Iris Setosa":
-        st.image(setosa)
-    if result["flower_class"] == "Iris Versicolour":
-        st.image(versicolor)
-    if result["flower_class"] == "Iris Virginica":
-        st.image(virginica)
+    params, submitted1 = show_sidebar()
 
-st.write(st.secrets)
+    if submitted1:
+        result: dict = post_get_predict(params)
+        st.write(result["flower_class"])
+        if result["flower_class"] == "Iris Setosa":
+            st.image(setosa)
+        if result["flower_class"] == "Iris Versicolour":
+            st.image(versicolor)
+        if result["flower_class"] == "Iris Virginica":
+            st.image(virginica)
+
+
+if __name__ == '__main__':
+    main()
