@@ -1,22 +1,30 @@
+import os
+
 import requests
 import streamlit as st
 from PIL import Image
 
-# URL = 'http://0.0.0.0:8000/predict_flower'
-URL = 'https://7ecd-89-179-65-195.eu.ngrok.io/predict_flower'
-
-iris = Image.open('app/media/iris.png')
-setosa = Image.open('app/media/setosa.png')
-versicolor = Image.open('app/media/versicolor.png')
-virginica = Image.open('app/media/virginica.png')
+iris = Image.open('media/iris.png')
+setosa = Image.open('media/setosa.png')
+versicolor = Image.open('media/versicolor.png')
+virginica = Image.open('media/virginica.png')
 
 
 def post_get_predict(a):
+    # URL = 'http://0.0.0.0:8000/predict_flower'
+    # URL = 'https://7ecd-89-179-65-195.eu.ngrok.io/predict_flower'
+    URL = st.secrets["URL"]
     response = requests.post(URL, json={"sepal_length": a[0],
                                         "sepal_width": a[1],
                                         "petal_length": a[2],
                                         "petal_width": a[3]})
     return response.json()
+
+
+def test_if_backend_is_working():
+    URL = st.secrets["URL"]
+    response = requests.get(URL)
+    return response.status_code == 200
 
 
 st.title("Iris flower species Classification App")
@@ -45,7 +53,6 @@ with st.form(key='Form1'):
 
         submitted1 = st.form_submit_button(label='Predict flower 2 🔎')
 
-
 if submitted1:
     result: dict = post_get_predict(params)
     st.write(result["flower_class"])
@@ -55,3 +62,5 @@ if submitted1:
         st.image(versicolor)
     if result["flower_class"] == "Iris Virginica":
         st.image(virginica)
+
+st.write(st.secrets)
